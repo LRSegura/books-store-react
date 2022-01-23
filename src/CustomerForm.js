@@ -2,7 +2,7 @@ import React from "react";
 import {NotificationContainer, NotificationManager} from "react-notifications";
 import BookStoreNavBar from "./BookStoreNavBar";
 import {Button, Container, Form, Row} from "react-bootstrap";
-import CustomDataTable from "./CustomDataTable";
+import CustomerDataTable from "./CustomerDataTable";
 
 class CustomerForm extends React.Component {
     constructor(props) {
@@ -12,6 +12,7 @@ class CustomerForm extends React.Component {
         this.onValueChangeLastName = this.onValueChangeLastName.bind(this);
         this.sendPostCustomer = this.sendPostCustomer.bind(this);
         this.removeItem = this.removeItem.bind(this);
+        this.customersCustoms = [];
     }
 
     onValueChangeName(e) {
@@ -20,6 +21,32 @@ class CustomerForm extends React.Component {
 
     onValueChangeLastName(e) {
         this.setState({lastName: e.target.value})
+    }
+
+    async componentDidMount() {
+        const url = 'http://localhost:8080/customer/find/all';
+
+        const response = await fetch(url, {
+                method: 'GET',
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer"
+            }
+        );
+        response.json().then(data => {
+            if (data) {
+                const customers = this.state.customers;
+                data.map(item =>(
+                    customers.push(item)
+                ));
+                this.setState({customers})
+            }
+        });
     }
 
     async sendPostCustomer() {
@@ -33,7 +60,7 @@ class CustomerForm extends React.Component {
             return;
         }
 
-        const url = 'http://localhost:8080/writer/save';
+        const url = 'http://localhost:8080/customer/save';
 
         const response = await fetch(url, {
                 method: 'POST',
@@ -50,7 +77,7 @@ class CustomerForm extends React.Component {
         );
         response.json().then(data => {
             if (data) {
-                const customers = this.state.writers;
+                const customers = this.state.customers;
                 customers.push(data);
                 NotificationManager.success('Success', '');
                 this.setState({name: '', lastName: ''});
@@ -60,7 +87,7 @@ class CustomerForm extends React.Component {
 
     async removeItem(item) {
         console.log(item);
-        const url = 'http://localhost:8080/writer/delete';
+        const url = 'http://localhost:8080/customer/delete';
 
         await fetch(url, {
                 method: 'POST',
@@ -85,10 +112,12 @@ class CustomerForm extends React.Component {
         const name = this.state.name;
         const lastName = this.state.lastName;
         const customers = this.state.customers;
+
         return (
             <div>
                 <BookStoreNavBar/>
                 <Container fluid='sm'>
+                    <h1>Customers</h1>
                     <Form>
                         <Row className="mb-3">
                             <Form.Group className='mb-3'>
@@ -111,8 +140,7 @@ class CustomerForm extends React.Component {
 
                 </Container>
                 <br/>
-                <CustomDataTable titles={['ID', 'name', 'Last Name', 'Actions']} writers={customers}
-                                 removeItem={this.removeItem}/>
+                <CustomerDataTable customers={customers} removeItem={this.removeItem}/>
                 <NotificationContainer/>
             </div>
         );

@@ -4,7 +4,7 @@ import 'react-notifications/lib/notifications.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './WriterForm.css'
-import CustomDataTable from "./CustomDataTable";
+import WriterDataTable from "./WriterDataTable";
 import BookStoreNavBar from "./BookStoreNavBar";
 
 class WriterForm extends React.Component {
@@ -24,6 +24,32 @@ class WriterForm extends React.Component {
 
     onValueChangeLastName(e) {
         this.setState({lastName: e.target.value})
+    }
+
+    async componentDidMount() {
+        const url = 'http://localhost:8080/writer/find/all';
+
+        const response = await fetch(url, {
+                method: 'GET',
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer"
+            }
+        );
+        response.json().then(data => {
+            if (data) {
+                const writers = this.state.writers;
+                data.map(item =>(
+                    writers.push(item)
+                ));
+                this.setState({writers})
+            }
+        });
     }
 
     async sendPostWriter() {
@@ -93,6 +119,7 @@ class WriterForm extends React.Component {
             <div>
                 <BookStoreNavBar/>
                 <Container fluid='sm'>
+                    <h1>Writers</h1>
                     <Form>
                         <Row className="mb-3">
                             <Form.Group className='mb-3'>
@@ -115,7 +142,7 @@ class WriterForm extends React.Component {
 
                 </Container>
                 <br/>
-                <CustomDataTable titles={['ID','name', 'Last Name', 'Actions']} writers={writers} removeItem={this.removeItem}/>
+                <WriterDataTable titles={['ID','name', 'Last Name', 'Actions']} writers={writers} removeItem={this.removeItem}/>
                 <NotificationContainer/>
             </div>
         );

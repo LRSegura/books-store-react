@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Container, Table} from "react-bootstrap";
 
-class CustomDataTable extends React.Component {
+class WriterDataTable extends React.Component {
 
     render() {
         const titles = this.props.titles;
@@ -36,4 +36,4 @@ class CustomDataTable extends React.Component {
     }
 }
 
-export default CustomDataTable;
+export default WriterDataTable;
