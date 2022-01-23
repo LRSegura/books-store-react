@@ -1,20 +1,16 @@
 import React from "react";
-import {Button, Container, Form, Row} from "react-bootstrap";
-import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './WriterForm.css'
-import CustomDataTable from "./CustomDataTable";
+import {NotificationContainer, NotificationManager} from "react-notifications";
 import BookStoreNavBar from "./BookStoreNavBar";
+import {Button, Container, Form, Row} from "react-bootstrap";
+import CustomDataTable from "./CustomDataTable";
 
-class WriterForm extends React.Component {
-
+class CustomerForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {name: '', lastName: '', writers: []}
+        this.state = {name: '', lastName: '', customers: []}
         this.onValueChangeName = this.onValueChangeName.bind(this);
         this.onValueChangeLastName = this.onValueChangeLastName.bind(this);
-        this.sendPostWriter = this.sendPostWriter.bind(this);
+        this.sendPostCustomer = this.sendPostCustomer.bind(this);
         this.removeItem = this.removeItem.bind(this);
     }
 
@@ -26,13 +22,13 @@ class WriterForm extends React.Component {
         this.setState({lastName: e.target.value})
     }
 
-    async sendPostWriter() {
-        const writer = {
+    async sendPostCustomer() {
+        const customer = {
             name: this.state.name,
             lastName: this.state.lastName
         };
 
-        if (!writer['name'] || !writer['lastName']) {
+        if (!customer['name'] || !customer['lastName']) {
             NotificationManager.error('Field Empty');
             return;
         }
@@ -49,13 +45,13 @@ class WriterForm extends React.Component {
                 },
                 redirect: "follow",
                 referrerPolicy: "no-referrer",
-                body: JSON.stringify(writer)
+                body: JSON.stringify(customer)
             }
         );
         response.json().then(data => {
             if (data) {
-                const writers = this.state.writers;
-                writers.push(data);
+                const customers = this.state.writers;
+                customers.push(data);
                 NotificationManager.success('Success', '');
                 this.setState({name: '', lastName: ''});
             }
@@ -66,7 +62,7 @@ class WriterForm extends React.Component {
         console.log(item);
         const url = 'http://localhost:8080/writer/delete';
 
-      await fetch(url, {
+        await fetch(url, {
                 method: 'POST',
                 mode: "cors",
                 cache: "no-cache",
@@ -80,15 +76,15 @@ class WriterForm extends React.Component {
             }
         );
 
-        const writers = this.state.writers;
-        const filteredWriters = writers.filter((value, index, array) => value.id !== item.id)
-        this.setState({writers: filteredWriters});
+        const customers = this.state.customers;
+        const filteredCustomers = customers.filter((value, index, array) => value.id !== item.id)
+        this.setState({customers: filteredCustomers});
     }
 
     render() {
         const name = this.state.name;
         const lastName = this.state.lastName;
-        const writers = this.state.writers;
+        const customers = this.state.customers;
         return (
             <div>
                 <BookStoreNavBar/>
@@ -97,30 +93,30 @@ class WriterForm extends React.Component {
                         <Row className="mb-3">
                             <Form.Group className='mb-3'>
                                 <Form.Label>Name</Form.Label>
-                                <Form.Control type="text" placeholder="Type writer's Name" value={name}
+                                <Form.Control type="text" placeholder="Type customer's Name" value={name}
                                               onChange={this.onValueChangeName}/>
                             </Form.Group>
                         </Row>
                         <Row className="mb-3">
                             <Form.Group className='mb-3'>
                                 <Form.Label>Last Name</Form.Label>
-                                <Form.Control type="text" placeholder="Type writer's last name" value={lastName}
+                                <Form.Control type="text" placeholder="Type customer's last name" value={lastName}
                                               onChange={this.onValueChangeLastName}/>
                             </Form.Group>
                         </Row>
-                        <Button variant="success" onClick={this.sendPostWriter}>
+                        <Button variant="success" onClick={this.sendPostCustomer}>
                             Submit
                         </Button>
                     </Form>
 
                 </Container>
                 <br/>
-                <CustomDataTable titles={['ID','name', 'Last Name', 'Actions']} writers={writers} removeItem={this.removeItem}/>
+                <CustomDataTable titles={['ID', 'name', 'Last Name', 'Actions']} writers={customers}
+                                 removeItem={this.removeItem}/>
                 <NotificationContainer/>
             </div>
         );
     }
-
 }
 
-export default WriterForm;
+export default CustomerForm;
