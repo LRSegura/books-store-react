@@ -14,7 +14,8 @@ class Home extends React.Component {
                     }}
                 >
                     <Link to="/writers">Writers</Link> |{" "}
-                    <Link to="/customers">Customers</Link>
+                    <Link to="/customers">Customers</Link> |{" "}
+                    <Link to="/books">Books</Link>
                 </nav>
                 <Outlet/>
             </div>

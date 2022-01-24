@@ -12,7 +12,6 @@ class CustomerForm extends React.Component {
         this.onValueChangeLastName = this.onValueChangeLastName.bind(this);
         this.sendPostCustomer = this.sendPostCustomer.bind(this);
         this.removeItem = this.removeItem.bind(this);
-        this.customersCustoms = [];
     }
 
     onValueChangeName(e) {
