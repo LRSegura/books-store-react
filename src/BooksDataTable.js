@@ -6,7 +6,6 @@ class BooksDataTable extends React.Component {
     render() {
         const titles = ['ID', 'Name', 'Year', 'Price', 'Writer'];
         const books = this.props.books;
-        console.log(books);
         return (
             <Container fluid='md'>
                 <Table striped bordered hover>
@@ -26,7 +25,7 @@ class BooksDataTable extends React.Component {
                             <td>{book.name}</td>
                             <td>{book.year}</td>
                             <td>{book.price}</td>
-                            <td>{book.writer}</td>
+                            <td>{book.writer.name + ' '+ book.writer.lastName}</td>
 
                             <td><Button variant="danger" onClick={() => {this.props.removeItem(book) }}>
                                 Delete

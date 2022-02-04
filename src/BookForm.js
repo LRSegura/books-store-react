@@ -14,7 +14,8 @@ class BookForm extends React.Component {
         this.onValueChangePrice = this.onValueChangePrice.bind(this);
         this.onValueChangeWriter = this.onValueChangeWriter.bind(this);
         this.sendPostBook = this.sendPostBook.bind(this);
-        // this.removeItem = this.removeItem.bind(this);
+        this.removeItem = this.removeItem.bind(this);
+        this.valueWriterOnchange = {};
     }
 
     onValueChangeName(e) {
@@ -34,6 +35,7 @@ class BookForm extends React.Component {
         const writers = this.state.writers;
         const writer = writers.filter((value, index, array) => value.id === id).shift();
         this.setState({writer})
+        this.valueWriterOnchange = e;
     }
 
 
@@ -95,7 +97,7 @@ class BookForm extends React.Component {
             writer: this.state.writer
         };
 
-        if (!book['name'] || !book['year'] || !book['price'] || !book['writer']) {
+        if (!book.name || !book.year || !book.price|| !book.writer || Object.keys(book.writer).length ===0) {
             NotificationManager.error('Field Empty');
             return;
         }
@@ -121,32 +123,32 @@ class BookForm extends React.Component {
                 books.push(data);
                 NotificationManager.success('Success', '');
                 this.setState({name: '', year: '', price: 0.0, writer:{}});
+                this.valueWriterOnchange.target.value = 'Select Writer';
             }
         });
     }
-    //
-    // async removeItem(item) {
-    //     console.log(item);
-    //     const url = 'http://localhost:8080/customer/delete';
-    //
-    //     await fetch(url, {
-    //             method: 'POST',
-    //             mode: "cors",
-    //             cache: "no-cache",
-    //             credentials: "same-origin",
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             redirect: "follow",
-    //             referrerPolicy: "no-referrer",
-    //             body: JSON.stringify(item)
-    //         }
-    //     );
-    //
-    //     const customers = this.state.customers;
-    //     const filteredCustomers = customers.filter((value, index, array) => value.id !== item.id)
-    //     this.setState({customers: filteredCustomers});
-    // }
+
+    async removeItem(item) {
+        const url = 'http://localhost:8080/books/delete';
+
+        await fetch(url, {
+                method: 'DELETE',
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify(item)
+            }
+        );
+
+        const books = this.state.books;
+        const filteredBooks = books.filter((value, index, array) => value.id !== item.id)
+        this.setState({books: filteredBooks});
+    }
 
     render() {
         const name = this.state.name;

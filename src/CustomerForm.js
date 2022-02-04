@@ -89,7 +89,7 @@ class CustomerForm extends React.Component {
         const url = 'http://localhost:8080/customer/delete';
 
         await fetch(url, {
-                method: 'POST',
+                method: 'DELETE',
                 mode: "cors",
                 cache: "no-cache",
                 credentials: "same-origin",

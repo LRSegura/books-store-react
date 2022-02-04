@@ -93,7 +93,7 @@ class WriterForm extends React.Component {
         const url = 'http://localhost:8080/writer/delete';
 
       await fetch(url, {
-                method: 'POST',
+                method: 'DELETE',
                 mode: "cors",
                 cache: "no-cache",
                 credentials: "same-origin",
