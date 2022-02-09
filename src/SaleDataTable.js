@@ -20,6 +20,7 @@ class SaleDataTable extends React.Component {
                     <tbody>
                     {sales.map(sale => (
                         <tr key={sale.id}>
+                            <td>{sale.id}</td>
                             <td>{sale.customer.name}</td>
                             <td>{sale.book.name}</td>
                             <td>{sale.saleDate}</td>

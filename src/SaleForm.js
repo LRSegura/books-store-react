@@ -15,6 +15,7 @@ class SaleForm extends React.Component{
         this.sendPostSale = this.sendPostSale.bind(this)
         this.onValueChangeCustomer = this.onValueChangeCustomer.bind(this);
         this.onValueChangeBooks = this.onValueChangeBooks.bind(this);
+        this.removeItem = this.removeItem.bind(this);
         this.valueCustomerOnchange = null;
         this.valueBookOnchange = null;
     };
@@ -67,12 +68,37 @@ class SaleForm extends React.Component{
                 this.setState({books})
             }
         });
+
+        const urlSale = 'http://localhost:8080/sales/find/all';
+
+        const responseSale = await fetch(urlSale, {
+                method: 'GET',
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer"
+            }
+        );
+        responseSale.json().then(data => {
+            if (data) {
+                const sales = this.state.sales;
+                data.map(item =>(
+                    sales.push(item)
+                ));
+                this.setState({sales})
+            }
+        });
+
     }
 
     onValueChangeCustomer(e) {
         const id = parseInt(e.target.value);
         const customers = this.state.customers;
-        const customer = customers.filter((value, index, array) => value.id === id).shift();
+        const customer = customers.filter((value) => value.id === id).shift();
         this.setState({customer})
         this.valueCustomerOnchange = e;
     }
@@ -80,16 +106,11 @@ class SaleForm extends React.Component{
         this.setState({amount});
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        // const date = this.state.saleDate;
-        // console.log(date.get);
-    }
-
     render() {
         const customers = this.state.customers;
         const books = this.state.books;
         const sales = this.state.sales;
-        const amount = this.state.amount;
+        
         return (
             <div>
                 <BookStoreNavBar/>
@@ -150,7 +171,7 @@ class SaleForm extends React.Component{
     onValueChangeBooks(e) {
         const id = parseInt(e.target.value);
         const books = this.state.books;
-        const book = books.filter((value, index, array) => value.id === id).shift();
+        const book = books.filter((value) => value.id === id).shift();
         this.setState({book})
         this.valueBookOnchange = e;
     }
@@ -201,6 +222,29 @@ class SaleForm extends React.Component{
              }
          });
      }
+
+
+    async removeItem(item) {
+        const url = 'http://localhost:8080/sales/delete';
+
+        await fetch(url, {
+                method: 'DELETE',
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: JSON.stringify(item)
+            }
+        );
+
+        const sales = this.state.sales;
+        const filteredSales = sales.filter((value) => value.id !== item.id)
+        this.setState({sales: filteredSales});
+    }
 }
 
 export default SaleForm;
