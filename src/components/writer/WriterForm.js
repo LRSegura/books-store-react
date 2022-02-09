@@ -1,16 +1,20 @@
 import React from "react";
-import {NotificationContainer, NotificationManager} from "react-notifications";
-import BookStoreNavBar from "./BookStoreNavBar";
 import {Button, Container, Form, Row} from "react-bootstrap";
-import CustomerDataTable from "./CustomerDataTable";
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import customStyle from "../../styles/customStyle.css";
+import WriterDataTable from "./WriterDataTable";
+import BookStoreNavBar from "../../components/navBar/BookStoreNavBar";
 
-class CustomerForm extends React.Component {
+class WriterForm extends React.Component {
+
     constructor(props) {
         super(props);
-        this.state = {name: '', lastName: '', customers: []}
+        this.state = {name: '', lastName: '', writers: []}
         this.onValueChangeName = this.onValueChangeName.bind(this);
         this.onValueChangeLastName = this.onValueChangeLastName.bind(this);
-        this.sendPostCustomer = this.sendPostCustomer.bind(this);
+        this.sendPostWriter = this.sendPostWriter.bind(this);
         this.removeItem = this.removeItem.bind(this);
     }
 
@@ -23,7 +27,7 @@ class CustomerForm extends React.Component {
     }
 
     async componentDidMount() {
-        const url = 'http://localhost:8080/customer/find/all';
+        const url = 'http://localhost:8080/writer/find/all';
 
         const response = await fetch(url, {
                 method: 'GET',
@@ -39,27 +43,27 @@ class CustomerForm extends React.Component {
         );
         response.json().then(data => {
             if (data) {
-                const customers = this.state.customers;
+                const writers = this.state.writers;
                 data.map(item =>(
-                    customers.push(item)
+                    writers.push(item)
                 ));
-                this.setState({customers})
+                this.setState({writers})
             }
         });
     }
 
-    async sendPostCustomer() {
-        const customer = {
+    async sendPostWriter() {
+        const writer = {
             name: this.state.name,
             lastName: this.state.lastName
         };
 
-        if (!customer['name'] || !customer['lastName']) {
+        if (!writer['name'] || !writer['lastName']) {
             NotificationManager.error('Field Empty');
             return;
         }
 
-        const url = 'http://localhost:8080/customer/save';
+        const url = 'http://localhost:8080/writer/save';
 
         const response = await fetch(url, {
                 method: 'POST',
@@ -71,13 +75,13 @@ class CustomerForm extends React.Component {
                 },
                 redirect: "follow",
                 referrerPolicy: "no-referrer",
-                body: JSON.stringify(customer)
+                body: JSON.stringify(writer)
             }
         );
         response.json().then(data => {
             if (data) {
-                const customers = this.state.customers;
-                customers.push(data);
+                const writers = this.state.writers;
+                writers.push(data);
                 NotificationManager.success('Success', '');
                 this.setState({name: '', lastName: ''});
             }
@@ -86,9 +90,9 @@ class CustomerForm extends React.Component {
 
     async removeItem(item) {
         console.log(item);
-        const url = 'http://localhost:8080/customer/delete';
+        const url = 'http://localhost:8080/writer/delete';
 
-        await fetch(url, {
+      await fetch(url, {
                 method: 'DELETE',
                 mode: "cors",
                 cache: "no-cache",
@@ -102,48 +106,48 @@ class CustomerForm extends React.Component {
             }
         );
 
-        const customers = this.state.customers;
-        const filteredCustomers = customers.filter((value, index, array) => value.id !== item.id)
-        this.setState({customers: filteredCustomers});
+        const writers = this.state.writers;
+        const filteredWriters = writers.filter((value) => value.id !== item.id)
+        this.setState({writers: filteredWriters});
     }
 
     render() {
         const name = this.state.name;
         const lastName = this.state.lastName;
-        const customers = this.state.customers;
-
+        const writers = this.state.writers;
         return (
             <div>
                 <BookStoreNavBar/>
                 <Container fluid='sm'>
-                    <h1>Customers</h1>
+                    <h1>Writers</h1>
                     <Form>
                         <Row className="mb-3">
                             <Form.Group className='mb-3'>
                                 <Form.Label>Name</Form.Label>
-                                <Form.Control type="text" placeholder="Type customer's Name" value={name}
+                                <Form.Control type="text" placeholder="Type writer's Name" value={name}
                                               onChange={this.onValueChangeName}/>
                             </Form.Group>
                         </Row>
                         <Row className="mb-3">
                             <Form.Group className='mb-3'>
                                 <Form.Label>Last Name</Form.Label>
-                                <Form.Control type="text" placeholder="Type customer's last name" value={lastName}
+                                <Form.Control type="text" placeholder="Type writer's last name" value={lastName}
                                               onChange={this.onValueChangeLastName}/>
                             </Form.Group>
                         </Row>
-                        <Button variant="success" onClick={this.sendPostCustomer}>
+                        <Button variant="success" onClick={this.sendPostWriter}>
                             Submit
                         </Button>
                     </Form>
 
                 </Container>
                 <br/>
-                <CustomerDataTable customers={customers} removeItem={this.removeItem}/>
+                <WriterDataTable titles={['ID','name', 'Last Name', 'Actions']} writers={writers} removeItem={this.removeItem}/>
                 <NotificationContainer/>
             </div>
         );
     }
+
 }
 
-export default CustomerForm;
+export default WriterForm;

@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import Home from "./Home";
+import './styles/index.css';
+import Home from "./components/navBar/Home";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import WriterForm from "./WriterForm";
-import CustomerForm from "./CustomerForm";
-import BookForm from "./BookForm";
-import SaleForm from "./SaleForm";
+import WriterForm from "./components/writer/WriterForm";
+import CustomerForm from "./components/customer/CustomerForm";
+import BookForm from "./components/book/BookForm";
+import SaleForm from "./components/sale/SaleForm";
 
 ReactDOM.render(
     <BrowserRouter>

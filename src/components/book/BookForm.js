@@ -1,6 +1,6 @@
 import React from "react";
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import BookStoreNavBar from "./BookStoreNavBar";
+import BookStoreNavBar from "../../components/navBar/BookStoreNavBar";
 import {Button, Container, Form, Row} from "react-bootstrap";
 import BooksDataTable from "./BooksDataTable";
 

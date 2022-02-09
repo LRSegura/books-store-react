@@ -1,6 +1,6 @@
 import React from "react";
 import SaleDataTable from "./SaleDataTable";
-import BookStoreNavBar from "./BookStoreNavBar";
+import BookStoreNavBar from "../../components/navBar/BookStoreNavBar";
 import {Button, Container, Form, Row} from "react-bootstrap";
 import {NotificationContainer, NotificationManager} from "react-notifications";
 import DatePicker from "react-datepicker";
@@ -110,7 +110,7 @@ class SaleForm extends React.Component{
         const customers = this.state.customers;
         const books = this.state.books;
         const sales = this.state.sales;
-        
+
         return (
             <div>
                 <BookStoreNavBar/>
